@@ -149,6 +149,22 @@ public class MovieCollection
         }
     }
 
+    private void sortResults2(ArrayList<String> listToSort)
+    {
+        for (int j = 1; j < listToSort.size(); j++)
+        {
+            String temp = listToSort.get(j);
+
+            int possibleIndex = j;
+            while (possibleIndex > 0 && temp.compareTo(listToSort.get(possibleIndex - 1)) < 0)
+            {
+                listToSort.set(possibleIndex, listToSort.get(possibleIndex - 1));
+                possibleIndex--;
+            }
+            listToSort.set(possibleIndex, temp);
+        }
+    }
+
     private void displayMovieInfo(Movie movie)
     {
         System.out.println();
@@ -170,18 +186,38 @@ public class MovieCollection
 
         searchTerm = searchTerm.toLowerCase();
 
-        ArrayList<Movie> allCast = new ArrayList<Movie>();
+        ArrayList<String> allCast = new ArrayList<String>();
 
         for (int i = 0; i < movies.size(); i++)
         {
-            for (int j = 0; j < movies.size(); j++)
+            String[] castInMovies = movies.get(i).getCast().split("\\|");
+            for (int j = 0; j < castInMovies.length; j++)
             {
-                if (!(movies.get(i).getCast().equals(movies.get(j).getCast())))
+                boolean inList = false;
+                for (int k = 0; k < allCast.size(); k++)
                 {
-                    allCast.add(movies.get(i));
+                    if (allCast.get(k).equals(castInMovies[j]));
+                    {
+                        inList = true;
+                    }
+                }
+                if (!inList)
+                {
+                    allCast.add(castInMovies[j]);
                 }
             }
         }
+
+        for (int i = 0; i < allCast.size(); i++)
+        {
+            if (!(allCast.get(i).contains(searchTerm)))
+            {
+                allCast.remove(i);
+                i--;
+            }
+        }
+
+
     }
 
     private void searchKeywords()
