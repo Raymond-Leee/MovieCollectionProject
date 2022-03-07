@@ -289,7 +289,30 @@ public class MovieCollection
 
     private void listGenres()
     {
+        ArrayList<String> genres = new ArrayList<String>();
 
+        for (int i = 0; i < movies.size(); i++)
+        {
+            String[] genresInMovies = movies.get(i).getGenres().split("\\|");
+            for (int j = 0; j < genresInMovies.length; j++)
+            {
+                boolean inList = false;
+                for (int k = 0; k < genres.size(); k++)
+                {
+                    if (genres.get(k).equals(genresInMovies[j]));
+                    {
+                        inList = true;
+                    }
+                }
+                if (!inList)
+                {
+                    genres.add(genresInMovies[j]);
+                }
+            }
+        }
+
+        sortResults2(genres);
+        
     }
 
     private void listHighestRated()
@@ -299,7 +322,7 @@ public class MovieCollection
         ArrayList<Double> ratings = new ArrayList<Double>();
         double highestRating = 0;
 
-        for (int i = 0; i < movies.size(); i++)
+        for (int i = 0; i < movies.size() - 1; i++)
         {
             String title = movies.get(i).getTitle();
             double rating = movies.get(i).getUserRating();
@@ -310,12 +333,18 @@ public class MovieCollection
                 ratings.add(rating);
                 movie.add(movies.get(i));
             }
-            else if (movies.get(i).getUserRating() >= highestRating)
+            if (movies.get(i).getUserRating() >= highestRating)
             {
                 highestRating = rating;
                 results.add(0, title);
                 ratings.add(0, rating);
                 movie.add(0, movies.get(i));
+            }
+            if (movies.get(i).getUserRating() >= movies.get(i + 1).getUserRating())
+            {
+                results.add(i, title);
+                ratings.add(i, rating);
+                movie.add(i, movies.get(i));
             }
             else
             {
@@ -360,13 +389,13 @@ public class MovieCollection
     {
         ArrayList<Movie> movie = new ArrayList<Movie>();
         ArrayList<String> results = new ArrayList<String>();
-        ArrayList<Double> revenue = new ArrayList<Double>();
-        double highestEarning = 0;
+        ArrayList<Integer> revenue = new ArrayList<Integer>();
+        int highestEarning = 0;
 
-        for (int i = 0; i < movies.size(); i++)
+        for (int i = 0; i < movies.size() - 1; i++)
         {
             String title = movies.get(i).getTitle();
-            double earnings = movies.get(i).getRevenue();
+            int earnings = movies.get(i).getRevenue();
             if (i == 0)
             {
                 highestEarning = movies.get(i).getRevenue();
@@ -380,6 +409,12 @@ public class MovieCollection
                 results.add(0, title);
                 revenue.add(0, earnings);
                 movie.add(0, movies.get(i));
+            }
+            if (movies.get(i).getRevenue() >= movies.get(i + 1).getRevenue())
+            {
+                results.add(i, title);
+                revenue.add(i, earnings);
+                movie.add(i, movies.get(i));
             }
             else
             {
@@ -399,7 +434,7 @@ public class MovieCollection
         for (int i = 0; i < results.size(); i++)
         {
             String title = results.get(i);
-            double earnings = revenue.get(i);
+            int earnings = revenue.get(i);
 
             int choiceNum = i + 1;
 
